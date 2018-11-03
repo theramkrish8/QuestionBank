@@ -93,6 +93,8 @@ Class Question:
 	Chapter chapter
 	Subject subject
 	List<Tag> tags
+	SEVERITY severity
+	Integer marks
 	QUES_APPROVAL_STATUS approval_status
 	String approval_description
 	STATUS status
@@ -112,6 +114,9 @@ Enum ACCESS:
 
 Enum ROLE:
 	BOARD, GROUP, SCHOOL, SUBORDINATE, TEACHER
+	
+Enum SEVERITY:
+	EASY, MODERATE, HARD
 
 
 

@@ -27,7 +27,7 @@ Class User:
 	Group group
 	School school
 	List<Class> classes
-	ROLE role
+	List<ROLE> role
  	STATUS status
 	ACCESS access
 

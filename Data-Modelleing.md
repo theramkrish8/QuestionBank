@@ -26,11 +26,15 @@ Class User:
 	String Password
 	Group group
 	School school
-	List<Class> classes
-	List<ROLE> role
+	List<Role> role
  	STATUS status
 	ACCESS access
 
+Class Role:
+	ROLE role
+	List<Class> classes
+	Date assignedOn
+	
 Class Group:
 	Long groupID
 	String groupName

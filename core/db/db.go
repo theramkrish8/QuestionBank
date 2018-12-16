@@ -45,4 +45,6 @@ const (
 	GroupCollection = "groups"
 	//SchoolCollection schools collection name
 	SchoolCollection = "schools"
+	//ClassCollection class collection name
+	ClassCollection = "classes"
 )

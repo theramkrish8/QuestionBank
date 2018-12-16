@@ -30,9 +30,9 @@ type (
 	Access int
 	//Role type
 	Role struct {
-		Role       RoleType `json:"role" bson:"role"`
-		Classes    []Class  `json:"classes" bson:"classes"`
-		AssignedOn string   `json:"assigned_on" bson:"assigned_on"`
+		Role       RoleType    `json:"role" bson:"role"`
+		Classes    []mgo.DBRef `json:"classes" bson:"classes"`
+		AssignedOn string      `json:"assigned_on" bson:"assigned_on"`
 	}
 )
 

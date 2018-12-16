@@ -1,6 +1,9 @@
 package models
 
-import "gopkg.in/mgo.v2/bson"
+import (
+	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
+)
 
 type (
 	//User object
@@ -12,49 +15,45 @@ type (
 		Mobile    string        `json:"mobile" bson:"mobile"`
 		Email     string        `json:"email" bson:"email"`
 		Password  string        `json:"password" bson:"password"`
-	}
-	//School object
-	School struct {
-		SchoolID   int64   `json:"school_id" bson:"_id,omitempty"`
-		SchoolName string  `json:"School_name" bson:"school_name"`
-		Address    Address `json:"address" bson:"address"`
-		Contact    Contact `json:"contact" bson:"contact"`
-	}
-	//Class object
-	Class struct {
-		ClassID  bson.ObjectId `json:"class_id" bson:"_id,omitempty"`
-		Standard string        `json:"standard" bson:"standard"`
-		Sections []string      `json:"sections" bson:"sections"`
-		Subjects []Subject     `json:"subjects" bson:"subjects"`
-	}
-	//Subject object
-	Subject struct {
-		SubjectID   bson.ObjectId `json:"subject_id" bson:"_id,omitempty"`
-		SubjectCode string        `json:"subject_code" bson:"subject_code"`
-		SubjectName string        `json:"subject_name" bson:"subject_name"`
-		Chapters    []Chapter     `json:"chapters" bson:"chapters"`
+		Group     mgo.DBRef     `json:"group" bson:"group"`
+		School    mgo.DBRef     `json:"school" bson:"school"`
+		Roles     []Role        `json:"roles" bson:"roles"`
+		Status    Status        `json:"status" bson:"status"`
+		Access    Access        `json:"access" bson:"access"`
 	}
 
-	//Chapter object
-	Chapter struct {
-		ChapterID      int64  `json:"chapter_id" bson:"_id,omitempty"`
-		ChapterSquence string `json:"chapter_squence" bson:"chapter_sequence"`
-		ChapterName    string `json:"chapter_name" bson:"chapter_name"`
+	//RoleType enum type
+	RoleType int
+	//Status enum type
+	Status int
+	//Access enum type
+	Access int
+	//Role type
+	Role struct {
+		Role       RoleType
+		Classes    []Class
+		AssignedOn string
 	}
-	//Address object
-	Address struct {
-		Street   string `json:"street" bson:"street"`
-		Place    string `json:"place" bson:"place"`
-		District string `json:"district" bson:"district"`
-		State    string `json:"state" bson:"state"`
-		PinCode  string `json:"pin_code" bson:"pin_code"`
-	}
-	//Contact object
-	Contact struct {
-		Landline []string `json:"land_line" bson:"Land_line"`
-		Mobile   []string `json:"mobile" bson:"mobile"`
-		Fax      string   `json:"fax" bson:"fax"`
-		Email    string   `json:"email" bson:"email"`
-		Website  string   `json:"website" bson:"website"`
-	}
+)
+
+//enum type RoleType
+const (
+	BoardType       RoleType = 1
+	GroupType       RoleType = 2
+	SchoolType      RoleType = 3
+	SubOrdinateType RoleType = 4
+	TeacherType     RoleType = 5
+)
+
+//enum type Status
+const (
+	Active  Status = 1
+	Dorment Status = 0
+)
+
+//enum tye Access
+const (
+	None     Access = 0
+	ReadOnly Access = 1
+	All      Access = 2
 )

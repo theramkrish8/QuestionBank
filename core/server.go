@@ -1,33 +1,33 @@
 package main
 
 import (
-	"./controllers"
 	"github.com/gin-gonic/gin"
-	"gopkg.in/mgo.v2"
+
+	"QuestionBank/core/services"
 )
 
 func main() {
-	uc := controllers.NewUserController(getSession())
 	router := gin.Default()
-	router.GET("/user", uc.UsersList)
-	router.POST("/user", uc.CreateUser)
-	router.PUT("/user", uc.UpdateUser)
-	router.DELETE("/user", uc.RemoveUser)
-	router.GET("/user/{id}", uc.GetUser)
+	//User handlers
+	router.GET("/user", services.UsersList)
+	router.POST("/user", services.CreateUser)
+	router.PUT("/user", services.UpdateUser)
+	router.DELETE("/user", services.RemoveUser)
+	router.GET("/user/:id", services.GetUser)
+	//School handlers
+	router.GET("/school", services.SchoolList)
+	router.POST("/school", services.CreateSchool)
+	router.PUT("/school", services.UpdateSchool)
+	router.DELETE("/school", services.RemoveSchool)
+	router.GET("/school/:id", services.GetSchool)
+	//Group handlers
+	router.GET("/group", services.GroupList)
+	router.GET("/group/:id", services.GetUser)
+	router.POST("/group", services.CreateGroup)
+	router.PUT("/group/:id1/user/:id2", services.AddUserToGroup)
+	router.PUT("/group/:id1/school/:id2", services.AddSchoolToGroup)
+	//router.PUT("/group/{id}/classs", services.AddClassToGroup)
+	router.DELETE("/group", services.RemoveGroup)
 
 	router.Run(":6060")
-}
-
-// getSession creates a new mongo session and panics if connection error occurs
-func getSession() *mgo.Session {
-	// Connect to our local mongo
-	s, err := mgo.Dial("mongodb://localhost")
-
-	// Check if connection error, is mongo running?
-	if err != nil {
-		panic(err)
-	}
-
-	// Deliver session
-	return s
 }

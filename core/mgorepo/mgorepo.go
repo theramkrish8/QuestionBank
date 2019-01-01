@@ -1,4 +1,4 @@
-package db
+package mgorepo
 
 import (
 	"sync"
@@ -6,30 +6,30 @@ import (
 	"gopkg.in/mgo.v2"
 )
 
-//DBController type to have mongodb session object
-type DBController struct {
+//DBRepo type to have mongodb session object
+type DBRepo struct {
 	session *mgo.Session
 }
 
-var instance *DBController
+var instance *DBRepo
 var once sync.Once
 
-//GetInstance is to get singleton instance of db controller
-func GetInstance() *DBController {
+//GetInstance is to get singleton instance of db Repo
+func GetInstance() *DBRepo {
 	once.Do(func() {
 		s, err := mgo.Dial("mongodb://localhost")
 		// Check if connection error, is mongo running?
 		if err != nil {
 			panic(err)
 		}
-		instance = &DBController{}
+		instance = &DBRepo{}
 		instance.session = s
 	})
 	return instance
 }
 
 //GetSession to get the db session to add data to db
-func (dc DBController) GetSession() *mgo.Session {
+func (dc DBRepo) GetSession() *mgo.Session {
 	if dc.session == nil {
 		panic("Uninitialized session!!!")
 	}

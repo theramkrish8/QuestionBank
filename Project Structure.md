@@ -3,7 +3,7 @@ Project Structure
 applaunch
 	- main.go
 
-controller
+Repo
 	- userHandler.go
 		- addUserHandler().   // common sign-in/sign-up mappings
 		- addGroupHandler()

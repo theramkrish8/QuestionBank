@@ -4,14 +4,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"gopkg.in/mgo.v2/bson"
 
-	"QuestionBank/core/controllers"
 	"QuestionBank/core/models"
+	"QuestionBank/core/repo"
 	"QuestionBank/core/utils"
 )
 
 // GroupList Get all users
 func GroupList(c *gin.Context) {
-	var results, err = controllers.GetGroupController().GetAllGroups()
+	var results, err = repo.GetGroupRepo().GetAllGroups()
 	if err != nil {
 		utils.CheckAndDisplay(err, "Group doesn't exist", "404", c)
 	}
@@ -31,7 +31,7 @@ func GetGroup(c *gin.Context) {
 		return
 	}
 
-	var u, err = controllers.GetGroupController().GetGroupByID(oid)
+	var u, err = repo.GetGroupRepo().GetGroupByID(oid)
 	// Fetch group
 	if err != nil {
 		utils.DisplayError("Group doesn't exist", "404", c)
@@ -50,7 +50,7 @@ func CreateGroup(c *gin.Context) {
 	// This will infer what binder to use depending on the content-type header.
 	c.Bind(&json)
 
-	var group, err = controllers.GetGroupController().InsertGroup(json)
+	var group, err = repo.GetGroupRepo().InsertGroup(json)
 
 	if err != nil {
 		utils.CheckAndDisplay(err, "Insert group failed", "403", c)
@@ -86,7 +86,7 @@ func RemoveGroup(c *gin.Context) {
 	}
 
 	// Remove user
-	var err = controllers.GetGroupController().DeleteGroup(oid)
+	var err = repo.GetGroupRepo().DeleteGroup(oid)
 	if err != nil {
 		utils.CheckAndDisplay(err, "Fail to Remove", "404", c)
 		return
@@ -111,7 +111,7 @@ func AddUserToGroup(c *gin.Context) {
 
 	// Grab id
 
-	err := controllers.GetGroupController().UpdateGroupWithUserByID(goid, uoid)
+	err := repo.GetGroupRepo().UpdateGroupWithUserByID(goid, uoid)
 	if err != nil {
 		utils.CheckAndDisplay(err, "Update failed", "403", c)
 	}
@@ -141,7 +141,7 @@ func AddSchoolToGroup(c *gin.Context) {
 
 	// Grab id
 
-	var err = controllers.GetGroupController().UpdateGroupWithSchoolByID(gid, sid)
+	var err = repo.GetGroupRepo().UpdateGroupWithSchoolByID(gid, sid)
 	if err != nil {
 		utils.CheckAndDisplay(err, "Update failed", "403", c)
 	}

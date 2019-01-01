@@ -4,14 +4,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"gopkg.in/mgo.v2/bson"
 
-	"QuestionBank/core/controllers"
 	"QuestionBank/core/models"
+	"QuestionBank/core/repo"
 	"QuestionBank/core/utils"
 )
 
 // UsersList Get all users
 func UsersList(c *gin.Context) {
-	var results, err = controllers.GetUserController().GetAllUsers()
+	var results, err = repo.GetUserRepo().GetAllUsers()
 	if err != nil {
 		utils.CheckAndDisplay(err, "Users doesn't exist", "404", c)
 	}
@@ -31,7 +31,7 @@ func GetUser(c *gin.Context) {
 		return
 	}
 
-	var u, err = controllers.GetUserController().GetUserByID(oid)
+	var u, err = repo.GetUserRepo().GetUserByID(oid)
 	// Fetch user
 	if err != nil {
 		utils.DisplayError("Users doesn't exist", "404", c)
@@ -50,7 +50,7 @@ func CreateUser(c *gin.Context) {
 	// This will infer what binder to use depending on the content-type header.
 	c.Bind(&json)
 
-	var user, err = controllers.GetUserController().InsertUser(json)
+	var user, err = repo.GetUserRepo().InsertUser(json)
 
 	if err != nil {
 		utils.CheckAndDisplay(err, "Insert user failed", "403", c)
@@ -75,7 +75,7 @@ func RemoveUser(c *gin.Context) {
 	}
 
 	// Remove user
-	var err = controllers.GetUserController().DeleteUser(oid)
+	var err = repo.GetUserRepo().DeleteUser(oid)
 	if err != nil {
 		utils.CheckAndDisplay(err, "Fail to Remove user", "404", c)
 		return
@@ -85,24 +85,17 @@ func RemoveUser(c *gin.Context) {
 
 // UpdateUser Updates an existing user resource
 func UpdateUser(c *gin.Context) {
-	// Grab id
-	id := c.Params.ByName("id")
-	//Convert id to bson.ObjectId
-	oid := bson.ObjectIdHex(id)
-	var json models.User
+	var user models.User
 
-	// This will infer what binder to use depending on the content-type header.
-	c.Bind(&json)
+	c.Bind(&user)
 
-	// Verify id is ObjectId, otherwise bail
-	if !oid.Valid() {
+	// Verify id is ObjectId, otherwise fail
+	if !user.UserID.Valid() {
 		utils.DisplayError("User ID is not a bson.ObjectId", "404", c)
 		return
 	}
 
-	// Grab id
-
-	var u, err = controllers.GetUserController().UpdateUserByID(oid, json)
+	var u, err = repo.GetUserRepo().UpdateUserByID(user)
 	if err != nil {
 		utils.CheckAndDisplay(err, "Update failed", "403", c)
 	}

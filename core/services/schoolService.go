@@ -4,14 +4,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"gopkg.in/mgo.v2/bson"
 
-	"QuestionBank/core/controllers"
 	"QuestionBank/core/models"
+	"QuestionBank/core/repo"
 	"QuestionBank/core/utils"
 )
 
 // SchoolList Get all users
 func SchoolList(c *gin.Context) {
-	var results, err = controllers.GetSchoolController().GetAllSchools()
+	var results, err = repo.GetSchoolRepo().GetAllSchools()
 	if err != nil {
 		utils.CheckAndDisplay(err, "Schools doesn't exist", "404", c)
 	}
@@ -31,7 +31,7 @@ func GetSchool(c *gin.Context) {
 		return
 	}
 
-	var s, err = controllers.GetSchoolController().GetSchoolByID(oid)
+	var s, err = repo.GetSchoolRepo().GetSchoolByID(oid)
 	// Fetch user
 	if err != nil {
 		utils.DisplayError("Users doesn't exist", "404", c)
@@ -50,7 +50,7 @@ func CreateSchool(c *gin.Context) {
 	// This will infer what binder to use depending on the content-type header.
 	c.Bind(&json)
 
-	var s, err = controllers.GetSchoolController().InsertSchool(json)
+	var s, err = repo.GetSchoolRepo().InsertSchool(json)
 
 	if err != nil {
 		utils.CheckAndDisplay(err, "Insert failed", "403", c)
@@ -75,7 +75,7 @@ func RemoveSchool(c *gin.Context) {
 	}
 
 	// Remove school
-	var err = controllers.GetSchoolController().DeleteSchool(oid)
+	var err = repo.GetSchoolRepo().DeleteSchool(oid)
 	if err != nil {
 		utils.CheckAndDisplay(err, "Fail to Remove", "404", c)
 		return
@@ -85,21 +85,19 @@ func RemoveSchool(c *gin.Context) {
 
 // UpdateSchool Updates an existing user resource
 func UpdateSchool(c *gin.Context) {
-	id := c.Params.ByName("id")
-	oid := bson.ObjectIdHex(id)
-	var json models.School
+	var school models.School
 
 	// This will infer what binder to use depending on the content-type header.
-	c.Bind(&json)
+	c.Bind(&school)
 	// Verify id is ObjectId, otherwise bail
-	if !oid.Valid() {
+	if !school.SchoolID.Valid() {
 		utils.DisplayError("ID is not a bson.ObjectId", "404", c)
 		return
 	}
 
 	// Grab id
 
-	var s, err = controllers.GetSchoolController().UpdateSchoolByID(oid, json)
+	var s, err = repo.GetSchoolRepo().UpdateSchoolByID(school)
 	if err != nil {
 		utils.CheckAndDisplay(err, "Update failed", "403", c)
 	} else {

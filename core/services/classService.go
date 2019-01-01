@@ -4,14 +4,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"gopkg.in/mgo.v2/bson"
 
-	"QuestionBank/core/controllers"
 	"QuestionBank/core/models"
+	"QuestionBank/core/repo"
 	"QuestionBank/core/utils"
 )
 
 // ClassList Get all classes
 func ClassList(c *gin.Context) {
-	var results, err = controllers.GetClassController().GetAllClasses()
+	var results, err = repo.GetClassRepo().GetAllClasses()
 	if err != nil {
 		utils.CheckAndDisplay(err, "Classes doesn't exist", "404", c)
 	}
@@ -31,7 +31,7 @@ func GetClass(c *gin.Context) {
 		return
 	}
 
-	var u, err = controllers.GetClassController().GetClassByID(oid)
+	var u, err = repo.GetClassRepo().GetClassByID(oid)
 	// Fetch Class
 	if err != nil {
 		utils.DisplayError("Classes doesn't exist", "404", c)
@@ -50,7 +50,7 @@ func CreateClass(c *gin.Context) {
 	// This will infer what binder to use depending on the content-type header.
 	c.Bind(&json)
 
-	var class, err = controllers.GetClassController().InsertClass(json)
+	var class, err = repo.GetClassRepo().InsertClass(json)
 
 	if err != nil {
 		utils.CheckAndDisplay(err, "Insert Class failed", "403", c)
@@ -75,7 +75,7 @@ func RemoveClass(c *gin.Context) {
 	}
 
 	// Remove Class
-	var err = controllers.GetClassController().DeleteClass(oid)
+	var err = repo.GetClassRepo().DeleteClass(oid)
 	if err != nil {
 		utils.CheckAndDisplay(err, "Fail to Remove Class", "404", c)
 		return
@@ -85,24 +85,20 @@ func RemoveClass(c *gin.Context) {
 
 // UpdateClass Updates an existing Class resource
 func UpdateClass(c *gin.Context) {
-	// Grab id
-	id := c.Params.ByName("id")
-	//Convert id to bson.ObjectId
-	oid := bson.ObjectIdHex(id)
 	var json models.Class
 
 	// This will infer what binder to use depending on the content-type header.
 	c.Bind(&json)
 
 	// Verify id is ObjectId, otherwise bail
-	if !oid.Valid() {
+	if !json.ClassID.Valid() {
 		utils.DisplayError("Class ID is not a bson.ObjectId", "404", c)
 		return
 	}
 
 	// Grab id
 
-	var u, err = controllers.GetClassController().UpdateClassByID(oid, json)
+	var u, err = repo.GetClassRepo().UpdateClassByID(json.ClassID, json)
 	if err != nil {
 		utils.CheckAndDisplay(err, "Update failed", "403", c)
 	}
